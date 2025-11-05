@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Tracking Pengiriman</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Tracking Pengiriman 🗺️</h1>
+        <a href="dashboard.html" class="button">Kembali ke Dashboard</a>
+        
+        <div style="margin-top: 20px;">
+            <label for="noDO">Nomor Delivery Order (Contoh: **20230012** atau **20230013**):</label>
+            <input type="text" id="noDO" placeholder="Masukkan No. DO" required>
+            <button onclick="cariPengiriman()">Cari</button>
+        </div>
+
+        <div id="detailPengiriman" style="border: 1px solid var(--border-color); padding: 15px; margin-top: 20px; border-radius: 8px; display: none;">
+            <h2>Detail Pengiriman</h2>
+            <p><strong>Nama Pemesan:</strong> <span id="outputNama"></span></p>
+            
+            <h3>Status Pengiriman: <span id="outputStatus"></span></h3>
+            <div class="progress-container">
+                <div class="progress-line"></div>
+                <div id="progressBarFill" class="progress-bar-fill"></div>
+                <div class="step" id="step1" title="Pesanan Dibuat">1</div>
+                <div class="step" id="step2" title="Diproses Gudang">2</div>
+                <div class="step" id="step3" title="Dalam Perjalanan">3</div>
+                <div class="step" id="step4" title="Terkirim/Dikirim">4</div>
+            </div>
+            
+            <hr>
+
+            <h4>Informasi Ekspedisi</h4>
+            <ul>
+                <li>**Nomor DO:** <span id="outputNoDO"></span></li>
+                <li>**Ekspedisi:** <span id="outputEkspedisi"></span></li>
+                <li>**Tanggal Kirim:** <span id="outputTglKirim"></span></li>
+                <li>**Jenis Paket:** <span id="outputJenisPaket"></span></li>
+                <li>**Total Pembayaran:** <span id="outputTotalBayar"></span></li>
+            </ul>
+
+            <h4>Histori Perjalanan</h4>
+            <table class="tracking-table">
+                <thead>
+                    <tr>
+                        <th>Waktu</th>
+                        <th>Keterangan</th>
+                    </tr>
+                </thead>
+                <tbody id="historiTabelBody">
+                    </tbody>
+            </table>
+        </div>
+    </div> <script src="js/data.js"></script>
+    <script>
+        function cariPengiriman() {
+            const noDO = document.getElementById('noDO').value.trim();
+            const detailDiv = document.getElementById('detailPengiriman');
+            
+            // Cari data di objek dataTracking
+            const data = dataTracking[noDO];
+            const historiTabelBody = document.getElementById('historiTabelBody');
+            
+            if (data) {
+                // Tampilkan detail
+                document.getElementById('outputNama').textContent = data.nama;
+                document.getElementById('outputStatus').textContent = data.status;
+                document.getElementById('outputNoDO').textContent = data.nomorDO;
+                document.getElementById('outputEkspedisi').textContent = data.ekspedisi;
+                document.getElementById('outputTglKirim').textContent = data.tanggalKirim;
+                document.getElementById('outputJenisPaket').textContent = data.paket;
+                document.getElementById('outputTotalBayar').textContent = data.total;
+                
+                // Isi Histori Perjalanan
+                historiTabelBody.innerHTML = '';
+                data.perjalanan.forEach(item => {
+                    const row = historiTabelBody.insertRow();
+                    row.insertCell().textContent = item.waktu;
+                    row.insertCell().textContent = item.keterangan;
+                });
+
+                // --- Simulasi Progress Bar ---
+                const progressBar = document.getElementById('progressBarFill');
+                document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+                
+                let activeSteps = 1; // Default: Pesanan Dibuat
+
+                if (data.status === "Dalam Perjalanan") {
+                    activeSteps = 3; 
+                } else if (data.status === "Dikirim") {
+                    activeSteps = 4;
+                } else if (data.status === "Pesanan Diproses") {
+                    activeSteps = 2;
+                }
+                
+                // Aktifkan steps
+                for (let i = 1; i <= activeSteps; i++) {
+                     document.getElementById('step' + i).classList.add('active');
+                }
+                
+                // Atur lebar progress bar: (N-1) / 3 * 100%
+                progressBar.style.width = ((activeSteps - 1) / 3) * 100 + '%';
+
+                detailDiv.style.display = 'block';
+            } else {
+                alert('Nomor Delivery Order **' + noDO + '** tidak ditemukan!');
+                detailDiv.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

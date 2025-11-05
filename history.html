@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Riwayat Transaksi Saya</title>
+    <link rel="stylesheet" href="css/style.css"> 
+</head>
+<body>
+    <div class="container">
+        <h1>Riwayat Transaksi Saya 🛍️</h1>
+        <a href="dashboard.html" class="button">Kembali ke Dashboard</a>
+        
+        <p>Di sini Anda dapat melihat semua pesanan dan status pengiriman Anda.</p>
+        
+        <h2>Daftar Pesanan Saya</h2>
+        
+        <table id="tabelHistory">
+            <thead>
+                <tr>
+                    <th>No. Order</th>
+                    <th>Tanggal Pesan</th>
+                    <th>Total Bayar</th>
+                    <th>Status Akhir</th>
+                    <th>Lihat Tracking</th>
+                </tr>
+            </thead>
+            <tbody id="historyBody">
+                </tbody>
+        </table>
+        
+    </div>
+
+    <script>
+        // Data Dummy untuk Simulasi Riwayat Transaksi Pengguna
+        // Data ini bisa diambil dari dataLaporan yang sudah ada, tapi disederhanakan untuk tampilan riwayat
+        const dataRiwayatUser = [
+            { id: '202501005', tanggal: '04 Nov 2025', total: 'Rp 495.000', status: 'Dalam Pengiriman' },
+            { id: '202501004', tanggal: '03 Nov 2025', total: 'Rp 210.000', status: 'Dibatalkan' },
+            { id: '202501003', tanggal: '02 Nov 2025', total: 'Rp 580.000', status: 'Selesai' },
+            { id: '202501001', tanggal: '01 Nov 2025', total: 'Rp 350.000', status: 'Selesai' },
+        ];
+
+        const historyBody = document.getElementById('historyBody');
+
+        function renderHistory() {
+            historyBody.innerHTML = '';
+            
+            dataRiwayatUser.forEach(data => {
+                const row = historyBody.insertRow();
+                
+                row.insertCell().textContent = data.id;
+                row.insertCell().textContent = data.tanggal;
+                
+                // Total
+                const totalCell = row.insertCell();
+                totalCell.textContent = data.total;
+                totalCell.style.fontWeight = 'bold'; 
+                
+                // Status
+                const statusCell = row.insertCell();
+                statusCell.textContent = data.status;
+                if (data.status === 'Selesai') {
+                    statusCell.style.color = 'var(--success-color)';
+                    statusCell.style.fontWeight = 'bold';
+                } else if (data.status === 'Dibatalkan') {
+                    statusCell.style.color = 'var(--pastel-secondary)';
+                    statusCell.style.fontWeight = 'bold';
+                } else if (data.status === 'Dalam Pengiriman') {
+                    statusCell.style.color = 'var(--pastel-primary)';
+                    statusCell.style.fontWeight = 'bold';
+                }
+
+                // Kolom Tracking (Link ke tracking.html)
+                const trackCell = row.insertCell();
+                const btnTrack = document.createElement('a');
+                btnTrack.textContent = 'Lacak';
+                // Arahkan ke tracking.html (Bisa ditambahkan parameter query jika diperlukan, misal: ?do=202501005)
+                btnTrack.href = `tracking.html?do=${data.id}`;
+                
+                // Terapkan styling tombol yang lebih kecil dan secondary
+                btnTrack.classList.add('button');
+                btnTrack.style.backgroundColor = '#f4b6c2'; /* Pastel secondary */
+                btnTrack.style.padding = '8px 15px'; 
+                btnTrack.style.fontSize = '0.9em'; 
+                
+                trackCell.appendChild(btnTrack);
+            });
+        }
+
+        // Panggil fungsi saat halaman dimuat
+        renderHistory();
+    </script>
+</body>
+</html>

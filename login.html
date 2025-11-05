@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Toko Buku</title>
+    <link rel="stylesheet" href="css/style.css"> 
+</head>
+<body>
+    <div class="container" id="login-container">
+        <h1>Login Pelanggan 🔑</h1>
+        <form id="loginForm">
+            <div>
+                <label for="email">Email:</label>
+                <input type="email" id="email" required>
+            </div>
+            <div>
+                <label for="password">Password:</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <p>
+            <button onclick="showModal('Lupa Password')">Lupa Password</button>
+            <button onclick="showModal('Daftar Akun Baru')">Daftar</button>
+        </p>
+    </div> <div id="modalBox">
+        <h3 id="modalTitle"></h3>
+        <p>Ini adalah simulasi Modal Box untuk fitur **<span id="modalFeature"></span>**.</p>
+        <button onclick="closeModal()">Tutup</button>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script>
+        // Hapus style inline dari modal box agar CSS/style.css yang menangani styling-nya
+        document.getElementById('modalBox').removeAttribute('style');
+
+        // Fungsi untuk menampilkan modal/popup
+        function showModal(featureName) {
+            document.getElementById('modalTitle').textContent = featureName;
+            document.getElementById('modalFeature').textContent = featureName;
+            document.getElementById('modalBox').style.display = 'block';
+        }
+
+        // Fungsi untuk menutup modal/popup
+        function closeModal() {
+            document.getElementById('modalBox').style.display = 'none';
+        }
+
+        // Fungsi untuk menangani proses login menggunakan dataPengguna
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const emailInput = document.getElementById('email').value;
+            const passwordInput = document.getElementById('password').value;
+
+            // Cari pengguna yang cocok di array dataPengguna
+            // Asumsi dataPengguna sudah dimuat dari js/data.js
+            const user = dataPengguna.find(
+                u => u.email === emailInput && u.password === passwordInput
+            );
+
+            if (user) {
+                // Login berhasil
+                alert('Login Berhasil! Selamat datang, ' + user.nama + '.');
+                // Alihkan ke Dashboard
+                window.location.href = 'dashboard.html';
+            } else {
+                // Login gagal
+                alert('Email/password yang anda masukkan salah');
+            }
+        });
+    </script>
+</body>
+</html>

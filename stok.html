@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Stok & Katalog Buku</title>
+    <link rel="stylesheet" href="css/style.css"> 
+</head>
+<body>
+    <div class="container"> 
+        <h1>Informasi Stok/Katalog Buku 📖</h1>
+        <a href="dashboard.html" class="button">Kembali ke Dashboard</a>
+        
+        <h2>Daftar Buku di Katalog</h2>
+        
+        <div class="katalog-grid" id="katalogBukuGrid">
+        </div>
+
+        <h3>Tambah Stok Buku Baru</h3>
+        <form id="formTambahStok">
+            <div class="form-group">
+                <label for="inputKode">Kode Barang:</label>
+                <input type="text" id="inputKode" placeholder="Kode Barang (Ex: BXXX)" required>
+            </div>
+            <div class="form-group">
+                <label for="inputJudul">Judul Buku:</label>
+                <input type="text" id="inputJudul" placeholder="Judul Buku" required>
+            </div>
+            <div class="form-group">
+                <label for="inputEdisi">Edisi:</label>
+                <input type="text" id="inputEdisi" placeholder="Edisi" required>
+            </div>
+            <div class="form-group">
+                <label for="inputStok">Stok:</label>
+                <input type="number" id="inputStok" placeholder="Stok" required>
+            </div>
+            <div class="form-group">
+                <label for="inputHarga">Harga:</label>
+                <input type="text" id="inputHarga" placeholder="Harga (Ex: Rp 100.000)" required>
+            </div>
+            <div class="form-group">
+                <label for="inputCover">URL Gambar Cover (Opsional):</label>
+                <input type="text" id="inputCover" placeholder="URL Gambar (Ex: img/buku1.jpg)">
+            </div>
+            
+            <button type="submit">Tambah Buku</button>
+        </form>
+    </div>
+
+    <script src="js/stokScript.js"></script> 
+</body>
+</html>

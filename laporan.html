@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Laporan Pemesanan</title>
+    <link rel="stylesheet" href="css/style.css"> 
+</head>
+<body>
+    <div class="container">
+        <h1>Laporan Pemesanan 📈</h1>
+        <a href="dashboard.html" class="button">Kembali ke Dashboard</a>
+        
+        <p>Laporan ini menyajikan ringkasan data pemesanan yang telah dikonfirmasi.</p>
+        
+        <h2>Ringkasan Data (Simulasi)</h2>
+        
+        <table id="tabelLaporan">
+            <thead>
+                <tr>
+                    <th>No. Order</th>
+                    <th>Tanggal</th>
+                    <th>Nama Pemesan</th>
+                    <th>Total Item</th>
+                    <th>Total Bayar</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="laporanBody">
+                </tbody>
+        </table>
+
+        <button onclick="alert('Fitur Export ke PDF/Excel (Simulasi) berhasil!')">Export Data</button>
+        
+    </div>
+
+    <script>
+        // Data Dummy untuk Simulasi Laporan
+        const dataLaporan = [
+            { id: '202501001', tanggal: '01 Nov 2025', nama: 'Andi Nugraha', item: 3, total: 'Rp 350.000', status: 'Selesai' },
+            { id: '202501002', tanggal: '01 Nov 2025', nama: 'Budi Santoso', item: 1, total: 'Rp 125.000', status: 'Diproses' },
+            { id: '202501003', tanggal: '02 Nov 2025', nama: 'Citra Dewi', item: 5, total: 'Rp 580.000', status: 'Selesai' },
+            { id: '202501004', tanggal: '03 Nov 2025', nama: 'Dedi Kurniawan', item: 2, total: 'Rp 210.000', status: 'Dibatalkan' },
+            { id: '202501005', tanggal: '04 Nov 2025', nama: 'Eka Putri', item: 4, total: 'Rp 495.000', status: 'Dalam Pengiriman' },
+        ];
+
+        const laporanBody = document.getElementById('laporanBody');
+
+        function renderLaporan() {
+            laporanBody.innerHTML = '';
+            
+            dataLaporan.forEach(data => {
+                const row = laporanBody.insertRow();
+                
+                row.insertCell().textContent = data.id;
+                row.insertCell().textContent = data.tanggal;
+                row.insertCell().textContent = data.nama;
+                row.insertCell().textContent = data.item;
+                
+                // Total
+                const totalCell = row.insertCell();
+                totalCell.textContent = data.total;
+                totalCell.style.fontWeight = 'bold'; 
+                
+                // Status
+                const statusCell = row.insertCell();
+                statusCell.textContent = data.status;
+                if (data.status === 'Selesai') {
+                    // Warna status menggunakan variabel CSS --success-color
+                    statusCell.style.color = 'var(--success-color)';
+                    statusCell.style.fontWeight = 'bold';
+                } else if (data.status === 'Dibatalkan') {
+                    // Warna status menggunakan variabel CSS --pastel-secondary
+                    statusCell.style.color = 'var(--pastel-secondary)';
+                    statusCell.style.fontWeight = 'bold';
+                }
+
+                // Kolom Aksi
+                const aksiCell = row.insertCell();
+                const btnDetail = document.createElement('button');
+                btnDetail.textContent = 'Detail';
+                // Tambahkan class "button" untuk menerapkan styling pastel
+                btnDetail.classList.add('button');
+                btnDetail.style.padding = '8px 15px'; // Sesuaikan padding agar tidak terlalu besar di dalam tabel
+                btnDetail.style.fontSize = '0.9em'; // Kecilkan font
+                
+                btnDetail.onclick = () => alert('Menampilkan Detail Order: ' + data.id + ' (Simulasi)');
+                aksiCell.appendChild(btnDetail);
+            });
+        }
+
+        // Panggil fungsi saat halaman dimuat
+        renderLaporan();
+    </script>
+</body>
+</html>

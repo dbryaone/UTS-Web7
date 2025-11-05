@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Pemesanan & Checkout</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Gaya spesifik untuk checkout yang tidak ada di style.css */
+        .item-row input[type="number"] {
+            width: 70px; /* Atur lebar input jumlah agar tidak terlalu lebar */
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Halaman Pemesanan (Checkout) 📝</h1>
+        <a href="dashboard.html" class="button">Kembali ke Dashboard</a>
+        
+        <h2>Detail Pesanan Anda</h2>
+        
+        <table id="tabelPesanan">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Judul Buku</th>
+                    <th>Harga Satuan</th>
+                    <th>Jumlah</th>
+                    <th>Subtotal</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="pesananBody">
+                </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4" style="text-align: right; font-weight: bold;">Total Pembayaran</td>
+                    <td id="grandTotal" colspan="2" style="font-weight: bold;">Rp0</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <button onclick="addRandomItem()">Tambah Pesanan (Simulasi)\</button>
+
+        <hr>
+        
+        <h2>Informasi Pemesan & Pembayaran</h2>
+        <form id="checkoutForm">
+            <div class="form-group">
+                <label for="nama">Nama Lengkap</label>
+                <input type="text" id="nama" required>
+            </div>
+            <div class="form-group">
+                <label for="alamat">Alamat Pengiriman</label>
+                <input type="text" id="alamat" required>
+            </div>
+            <div class="form-group">
+                <label for="telepon">Nomor Telepon</label>
+                <input type="tel" id="telepon" required>
+            </div>
+            <div class="form-group">
+                <label for="metodeBayar">Metode Pembayaran</label>
+                <select id="metodeBayar" required>
+                    <option value="">Pilih Metode</option>
+                    <option value="transfer">Transfer Bank</option>
+                    <option value="gopay">Gopay/OVO</option>
+                    <option value="cod">Bayar di Tempat (COD)</option>
+                </select>
+            </div>
+            
+            <button type="submit">Konfirmasi Pemesanan</button>
+        </form>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script>
+        const pesananBody = document.getElementById('pesananBody');
+        
+        // Array untuk menyimpan item yang ada di keranjang (simulasi)
+        let keranjang = []; 
+
+        // Fungsi Helper: Mengubah string harga menjadi integer
+        function parseHarga(hargaString) {
+            // Menghapus 'Rp', spasi, dan titik ribuan, lalu parsing ke integer
+            return parseInt(hargaString.replace('Rp', '').replace(/\s/g, '').replace(/\./g, ''));
+        }
+
+        // Fungsi Helper: Menghitung ulang total untuk satu baris
+        function updateSubtotal(rowElement, jumlah) {
+            const hargaSatuanText = rowElement.cells[2].textContent;
+            const harga = parseHarga(hargaSatuanText);
+            const subtotal = harga * jumlah;
+            
+            rowElement.querySelector('.subtotal').textContent = 'Rp ' + subtotal.toLocaleString('id-ID');
+            updateGrandTotal();
+        }
+
+        // Fungsi untuk menambahkan item buku ke tabel
+        function addItemToTable(buku, jumlah) {
+            const row = pesananBody.insertRow();
+            row.classList.add('item-row');
+            
+            const harga = parseHarga(buku.harga);
+            const subtotalAwal = harga * jumlah;
+
+            row.insertCell().textContent = pesananBody.rows.length; // No. Urut
+            row.insertCell().textContent = buku.namaBarang;
+            row.insertCell().textContent = buku.harga; // Harga Satuan
+            
+            // Input Jumlah
+            const jumlahCell = row.insertCell();
+            const inputJumlah = document.createElement('input');
+            inputJumlah.type = 'number';
+            inputJumlah.value = jumlah;
+            inputJumlah.min = 1;
+            inputJumlah.onchange = (event) => updateSubtotal(row, parseInt(event.target.value));
+            jumlahCell.appendChild(inputJumlah);
+
+            // Subtotal
+            const subtotalCell = row.insertCell();
+            subtotalCell.classList.add('subtotal');
+            subtotalCell.textContent = 'Rp ' + subtotalAwal.toLocaleString('id-ID');
+
+            // Aksi
+            const aksiCell = row.insertCell();
+            const buttonHapus = document.createElement('button');
+            buttonHapus.textContent = 'Hapus';
+            buttonHapus.onclick = () => removeRow(row);
+            aksiCell.appendChild(buttonHapus);
+
+            updateGrandTotal();
+        }
+
+        // Fungsi simulasi menambahkan item random dari dataKatalogBuku
+        function addRandomItem() {
+            if (dataKatalogBuku.length === 0) {
+                alert('Data katalog buku kosong!');
+                return;
+            }
+            const randomIndex = Math.floor(Math.random() * dataKatalogBuku.length);
+            const bukuPilihan = dataKatalogBuku[randomIndex];
+            
+            // Cek apakah buku sudah ada di keranjang (simulasi sederhana)
+            // Untuk tugas ini, kita anggap setiap klik 'Tambah Pesanan' adalah baris baru (simpel)
+            
+            addItemToTable(bukuPilihan, 1);
+        }
+
+        // Fungsi untuk menghapus baris
+        function removeRow(rowElement) {
+            rowElement.remove();
+            updateGrandTotal();
+            // Perbarui No. urut setelah penghapusan
+            Array.from(pesananBody.rows).forEach((row, index) => {
+                row.cells[0].textContent = index + 1;
+            });
+        }
+
+        // Fungsi simulasi hitung Grand Total
+        function updateGrandTotal() {
+            let total = 0;
+            const subtotalElements = document.querySelectorAll('#tabelPesanan .subtotal');
+            
+            subtotalElements.forEach(el => {
+                // Hapus 'Rp', spasi, dan titik ribuan sebelum parsing
+                const subtotalValue = parseHarga(el.textContent);
+                total += subtotalValue;
+            });
+            
+            document.getElementById('grandTotal').textContent = 'Rp ' + total.toLocaleString('id-ID');
+        }
+
+        // Event handler untuk form checkout
+        document.getElementById('checkoutForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const totalBayar = document.getElementById('grandTotal').textContent;
+            
+            if (pesananBody.rows.length === 0) {
+                 alert('Keranjang Anda kosong. Tambahkan buku terlebih dahulu!');
+                 return;
+            }
+
+            alert(
+                'Pemesanan berhasil dikonfirmasi!\n\n' +
+                'Nama: ' + document.getElementById('nama').value + '\n' +
+                'Metode Pembayaran: ' + document.getElementById('metodeBayar').value + '\n' +
+                'Total Pembayaran: ' + totalBayar + '\n\n' +
+                '(Simulasi: Data tidak disimpan)'
+            );
+            // Reset form dan keranjang setelah konfirmasi (opsional)
+            this.reset();
+            pesananBody.innerHTML = '';
+            updateGrandTotal();
+        });
+
+        // Inisiasi: Tambahkan 2 item buku pertama saat halaman dimuat (untuk demo)
+        if (dataKatalogBuku.length > 0) {
+            addItemToTable(dataKatalogBuku[0], 1);
+            if (dataKatalogBuku.length > 1) {
+                addItemToTable(dataKatalogBuku[1], 2);
+            }
+        }
+    </script>
+</body>
+</html>

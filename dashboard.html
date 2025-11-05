@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Toko Buku</title>
+    <link rel="stylesheet" href="css/style.css"> 
+</head>
+<body>
+    <div class="container">
+        <h1 id="greeting"></h1>
+        
+        <h2>Menu Aplikasi</h2>
+        <ul class="dashboard-menu">
+            <li><a href="stok.html">Informasi Stok/Katalog</a></li>
+            <li><a href="tracking.html">Tracking Pengiriman</a></li>
+            <li><a href="checkout.html">Halaman Pemesanan</a></li>
+            <li><a href="laporan.html">Laporan Pemesanan (Belum diimplementasikan)</a></li>
+            <li><a href="history.html">History Transaksi (Belum diimplementasikan)</a></li>
+        </ul>
+        
+        <hr>
+
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <script>
+        // Fungsi untuk menampilkan greeting berdasarkan waktu lokal
+        function setGreeting() {
+            const date = new Date();
+            const hour = date.getHours();
+            let greetingText;
+
+            // Logika waktu
+            if (hour >= 4 && hour < 11) {
+                greetingText = "Selamat Pagi! 🌅";
+            } else if (hour >= 11 && hour < 15) {
+                greetingText = "Selamat Siang! ☀️";
+            } else if (hour >= 15 && hour < 18) {
+                greetingText = "Selamat Sore! 🌇";
+            } else {
+                greetingText = "Selamat Malam! 🌙";
+            }
+
+            document.getElementById('greeting').textContent = greetingText + " Selamat datang di Dashboard.";
+        }
+
+        function logout() {
+            // Simulasi Logout
+            alert('Anda telah logout dan kembali ke halaman login.');
+            window.location.href = 'login.html';
+        }
+
+        // Panggil fungsi saat halaman dimuat
+        setGreeting();
+    </script>
+</body>
+</html>
